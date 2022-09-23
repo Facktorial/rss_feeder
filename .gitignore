@@ -1,0 +1,3 @@
+needs_profiling.prof
+poetry.lock
+*/__pycache__/*

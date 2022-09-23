@@ -1,0 +1,20 @@
+{
+	"Haskell" : [
+		{"Kowainik" : "https://kowainik.github.io/rss.xml"},
+		{"Serokell" : "https://serokell.io/blog.rss.xml"},
+		{"Monday morning Haskell" : "https://mmhaskell.com/blog?format=RSS"},
+		{"Planet Haskell" : "https://planet.haskell.org/rss20.xml"},
+		{"Lexi Haskell" : "https://lexi-lambda.github.io/feeds/all.rss.xml"},
+		{"O'Charles" : "https://ocharles.org.uk/blog/posts.rss"}
+	],
+	"C++" : [
+		{"The Pasture" : "https://thephd.dev/feed.xml"},
+		{"David Lettier" : "https://lettier.github.io/rss.xml"}
+	],
+	"Python" : [
+		{"Philip Trauner" : "https://philip-trauner.me/blog/rss"}
+	],
+	"Else" : [
+		{"Fabien games" : "https://fabiensanglard.net/rss.xml"}
+	]
+}
