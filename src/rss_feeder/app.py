@@ -30,7 +30,8 @@ def app():
     data, topics = asyncio.run(filtred_feeder(links_from_json('RSS_feeds.json'), days=28, sandbox=sandbox))
 
     sandbox.topics = list(topics)
-    sandbox.cursor_pos = sandbox.topics.index("Haskell")
+    # sandbox.cursor_pos = sandbox.topics.index("Haskell")
+    sandbox.cursor_pos = sandbox.topics.index(sorted(topics)[0])
 
     render(data, sandbox)
     with Listener(on_press=lambda event: on_press(event, data, sandbox)) as listener:

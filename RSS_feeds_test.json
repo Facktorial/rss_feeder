@@ -1,0 +1,77 @@
+
+{
+	"Haskell" : [
+		{
+			"name" : "Well-typed",
+			"link": "https://well-typed.com/blog/rss2",
+			"subgroup" : "LEGIT", 
+			"flags" : [ "Haskell", "OpenSource", "Training" ]
+		},
+		{
+			"name" : "Serokell",
+			"link": "https://serokell.io/blog.rss.xml",
+			"subgroup" : "LEGIT", 
+			"flags" : [ "Haskell", "OpenSource", "Training" ]
+		},
+		{
+			"name" : "Kowainik",
+			"link": "https://kowainik.github.io/rss.xml",
+			"subgroup" : "LEGIT", 
+			"flags" : [ "Haskell" ]
+		},
+		{
+			"name" : "Monday morning Haskell",
+			"link": "https://mmhaskell.com/blog?format=RSS",
+			"subgroup" : "LEGIT", 
+			"flags" : [ "Haskell", "Training" ]
+		},
+		{
+			"name" : "Planet Haskell",
+			"link": "https://planet.haskell.org/rss20.xml",
+			"subgroup" : "LEGIT", 
+			"flags" : [ "Haskell" ]
+		},
+		{
+			"name" : "Lexi Haskell",
+			"link": "https://lexi-lambda.github.io/feeds/all.rss.xml",
+			"subgroup" : "LEGIT", 
+			"flags" : [ "Haskell" ]
+		},
+		{
+			"name" : "O'Charles",
+			"link": "https://ocharles.org.uk/blog/posts.rss",
+			"subgroup" : "LEGIT", 
+			"flags" : [ "Haskell" ]
+		}
+	],
+	"C++" : [
+		{
+			"name" : "The Pasture",
+			"link" : "https://thephd.dev/feed.xml",
+			"subgroup" :  "<BASE>",
+			"flags": [ "C++" ]
+		},
+		{
+			"name" : "David Lettier",
+			"link": "https://lettier.github.io/rss.xml",
+			"subgroup" :  "<BASE>",
+			"flags": [""]
+		}
+	],
+	"Python" : [
+		{
+			"name" : "Philip Trauner",
+			"link" : "https://philip-trauner.me/blog/rss",
+			"subgroup" :  "<BASE>",
+			"flags": ["Haskell"]
+		}
+	],
+	"GameDev" : [
+		{
+			"name" : "Fabien games",
+			"link" : "https://fabiensanglard.net/rss.xml",
+			"subgroup" :  "<BASE>",
+			"flags": ["Haskell"]
+		}
+	]
+}
