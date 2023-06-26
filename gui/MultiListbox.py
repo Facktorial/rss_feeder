@@ -11,11 +11,13 @@ class Observable(object):
     def emit (self, *args):
         '''Pass parameters to all observers and update states.'''
         for subscriber in self.__items:
+            # print("XXXXXXX", subscriber) # FIXME
             response = subscriber(*args)
             self.__items[subscriber] = response
  
     def subscribe (self, subscriber):
         '''Add a new subscriber to self.'''
+        # print("SUBSC: ", subscriber) # FIXME
         self.__items[subscriber] = None
  
     def stat (self):
@@ -31,7 +33,7 @@ class MultiListbox(Frame, Observable):
             frame = Frame(self); frame.pack(side=LEFT, expand=YES, fill=BOTH)
             Label(frame, text=l, borderwidth=1, relief=RAISED).pack(fill=X)
             lb = Listbox(frame, width=w, borderwidth=0, selectborderwidth=0,
-                relief=FLAT, exportselection=FALSE)
+                relief=FLAT, exportselection=FALSE, bg="grey")
             lb.pack(expand=YES, fill=BOTH)
             self.lists.append(lb)
             lb.bind('<B1-Motion>', lambda e, s=self: s._select(e.y))
@@ -51,6 +53,7 @@ class MultiListbox(Frame, Observable):
         self.selection_clear(0, END)
         self.selection_set(row)
         self.emit( row )
+        # print(f"{y=}") # FIXME
         return 'break'
 
     def _button2(self, x, y):
@@ -63,7 +66,9 @@ class MultiListbox(Frame, Observable):
 
     def _scroll(self, *args):
         for l in self.lists:
-            apply(l.yview, args)
+            # OHLASIT # TODO
+            # apply(l.yview, args)
+            l.yview(*args)
 
     def curselection(self):
         return self.lists[0].curselection()

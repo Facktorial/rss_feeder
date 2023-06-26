@@ -21,6 +21,8 @@ flake8 = "^6.0.0"
 pyright = "^1.1.310"
 black = "^23.3.0"
 async-tkinter-loop = "^0.8.1"
+Pillow = "^9.5.0"
+PyYAML = "^6.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

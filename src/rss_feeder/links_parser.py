@@ -11,7 +11,6 @@ def links_from_json(filename: str) -> Dict[str, List[str]]:
         return data
 
 
-
 def entries_from_json(filename: str) -> dict[str, list[FeedEntry]]:
     with open(filename, "r") as file:
         data = json.loads(file.read())
@@ -24,6 +23,7 @@ def entries_from_json(filename: str) -> dict[str, list[FeedEntry]]:
                     item["subgroup"],
                     item["name"],
                     item["link"],
+                    item["source"],
                     item["flags"]
                 ))
 

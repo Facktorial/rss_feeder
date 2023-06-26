@@ -14,12 +14,14 @@ class PostRecord:
     title: str
     link: str
     published: str
+    starred: bool
 
     def to_json(self):
         data = {
             "title": self.title,
             "link": self.link,
             "published": self.published,
+            "starred": self.starred
         }
         return data
 
@@ -29,15 +31,16 @@ class FeedRecord:
     group: str
     name: str
     feed_link: str
+    feed_source: str
     total_posts: int
     posts: list[PostRecord]  = field(default_factory=list)
-    # posts: list[PostRecord]  # = field(default_factory=list)
 
     def to_json(self):
         data = {
             "group": self.group,
             "name": self.name,
             "feed_link": self.feed_link,
+            "feed_source": self.feed_source,
             "total_posts": self.total_posts,
             # "posts": [PostRecord(**post) for post in self.posts]
             "posts": [post.to_json() for post in self.posts]
@@ -51,7 +54,9 @@ class FeedEntry:
     subgroup: str
     autor: str
     link: str
+    source: str
     flags: str
+    # comment: str
 
 
 RegistredFeeds = tuple[list[FeedRecord], set[str]]

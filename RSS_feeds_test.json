@@ -1,67 +1,111 @@
-
 {
 	"Haskell" : [
 		{
 			"name" : "Well-typed",
-			"link": "https://well-typed.com/blog/rss2",
+			"link": "https://well-typed.com/blog",
+			"source": "https://well-typed.com/blog/rss2",
 			"subgroup" : "LEGIT", 
 			"flags" : [ "Haskell", "OpenSource", "Training" ]
 		},
 		{
 			"name" : "Serokell",
-			"link": "https://serokell.io/blog.rss.xml",
+			"link": "https://serokell.io/",
+			"source": "https://serokell.io/blog.rss.xml",
 			"subgroup" : "LEGIT", 
 			"flags" : [ "Haskell", "OpenSource", "Training" ]
 		},
 		{
 			"name" : "Kowainik",
-			"link": "https://kowainik.github.io/rss.xml",
+			"link": "https://kowainik.github.io/",
+			"source": "https://kowainik.github.io/rss.xml",
 			"subgroup" : "LEGIT", 
 			"flags" : [ "Haskell" ]
 		},
 		{
 			"name" : "Monday morning Haskell",
-			"link": "https://mmhaskell.com/blog?format=RSS",
+			"link": "https://mmhaskell.com/blog",
+			"source": "https://mmhaskell.com/blog?format=RSS",
 			"subgroup" : "LEGIT", 
 			"flags" : [ "Haskell", "Training" ]
 		},
 		{
 			"name" : "Planet Haskell",
-			"link": "https://planet.haskell.org/rss20.xml",
+			"link": "https://planet.haskell.org/",
+			"source": "https://planet.haskell.org/rss20.xml",
 			"subgroup" : "LEGIT", 
 			"flags" : [ "Haskell" ]
 		},
 		{
 			"name" : "Lexi Haskell",
-			"link": "https://lexi-lambda.github.io/feeds/all.rss.xml",
+			"link": "https://lexi-lambda.github.io/",
+			"source": "https://lexi-lambda.github.io/feeds/all.rss.xml",
 			"subgroup" : "LEGIT", 
 			"flags" : [ "Haskell" ]
 		},
 		{
 			"name" : "O'Charles",
-			"link": "https://ocharles.org.uk/blog/posts.rss",
+			"link": "https://ocharles.org.uk/blog",
+			"source": "https://ocharles.org.uk/blog/posts.rss",
 			"subgroup" : "LEGIT", 
 			"flags" : [ "Haskell" ]
 		}
 	],
 	"C++" : [
 		{
+			"name" : "C++ Daily",
+			"link" : "https://fluentcpp.com",
+			"source" : "https://fluentcpp.com/feed",
+			"subgroup" :  "<BASE>",
+			"flags": [ "C++" ]
+		},
+		{
+			"name" : "C++ stories",
+			"link" : "https://www.cppstories.com",
+			"source" : "https://www.cppstories.com/index.xml",
+			"subgroup" :  "<BASE>",
+			"flags": [ "C++" ]
+		},
+		{
+			"name" : "Old New Thing",
+			"link" : "https://devblogs.microsoft.com/oldnewthing",
+			"source" : "https://devblogs.microsoft.com/oldnewthing/feed/",
+			"subgroup" :  "<BASE>",
+			"flags": [ "C++" ]
+		},
+		{
+			"name" : "Modernes Cpp",
+			"link" : "https://www.modernescpp.com/index.php",
+			"source" : "https://www.modernescpp.com/index.php?format=feed&type=rss",
+			"subgroup" :  "<BASE>",
+			"flags": [ "C++" ]
+		},
+		{
+			"name" : "Sutter's Mill",
+			"link" : "https://herbsutter.com",
+			"source" : "https://herbsutter.com/feed",
+			"subgroup" :  "<BASE>",
+			"flags": [ "C++" ]
+		},
+		{
 			"name" : "The Pasture",
-			"link" : "https://thephd.dev/feed.xml",
+			"link" : "https://thephd.dev",
+			"source" : "https://thephd.dev/feed.xml",
 			"subgroup" :  "<BASE>",
 			"flags": [ "C++" ]
 		},
 		{
 			"name" : "David Lettier",
-			"link": "https://lettier.github.io/rss.xml",
+			"link": "https://lettier.github.io",
+			"source": "https://lettier.github.io/rss.xml",
 			"subgroup" :  "<BASE>",
-			"flags": [""]
+			"flags": ["C++"]
 		}
 	],
 	"Python" : [
 		{
 			"name" : "Philip Trauner",
-			"link" : "https://philip-trauner.me/blog/rss",
+			"link" : "https://philip-trauner.me/blog",
+			"source" : "https://philip-trauner.me/blog/rss",
 			"subgroup" :  "<BASE>",
 			"flags": ["Haskell"]
 		}
@@ -69,7 +113,8 @@
 	"GameDev" : [
 		{
 			"name" : "Fabien games",
-			"link" : "https://fabiensanglard.net/rss.xml",
+			"link" : "https://fabiensanglard.net",
+			"source" : "https://fabiensanglard.net/rss.xml",
 			"subgroup" :  "<BASE>",
 			"flags": ["Haskell"]
 		}

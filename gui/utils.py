@@ -1,14 +1,11 @@
 from tkinter import *
 
 from async_tkinter_loop import main_loop
-# from async_tkinter_loop.async_tkinter_loop import main_loop
 
 from functools import partial
-from dataclasses import dataclass, field
 from typing import Protocol, Any, Callable
-import asyncio
-import json
 
+from webbrowser import open_new
 
 import os, sys
 current = os.path.dirname(os.path.realpath(__file__))
@@ -17,22 +14,17 @@ sys.path.append(parent)
 sys.path.append(f'{parent}/src')                                    
 sys.path.append(f'{parent}/src/rss_feeder')
 sys.path.append(f'{parent}/rss_feeder/src/rss_feeder')
+# from src.rss_feeder.my_types import *
 
 
 log = partial(print, "[GUI] ")
 
 
-DEFAULT_DAYS = 28
-PADX_MAIN = 8
-PADY_MAIN = 5
-PADX = 2
-PADY = 2
-ROWSPAN = 2
-COLSPAN = 2
-
-LOGIN = "DVO0226"
-FNAME = "Jakub"
-LNAME = "Dvorak"
+def open_url(e, url: str):
+    # label = e.widget
+    # url = label.cget("text")
+    if url is not None and url != "?":
+        open_new(url)
 
 
 def header_label(frame: Tk) -> LabelFrame:
@@ -74,7 +66,7 @@ class WrappClass:
         self.root = Tk()
 
         # Set the initial theme
-        self.root.call("source", "azure.tcl")
+        self.root.call("source", "gui/azure.tcl")
         self.root.call("set_theme", "dark")
 
         self.root.title(title_name)

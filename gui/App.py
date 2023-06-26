@@ -3,19 +3,22 @@ from tkinter import ttk
 from tkinter import font
 
 from enum import Enum
-from typing import Any, Protocol, Final, Type
-from dataclasses import dataclass, field
+from typing import Any, Callable, Final, Type
 from functools import partial, lru_cache, reduce
-import json
 
 from utils import WrappClass, log, create_circle
 
-from src.rss_feeder.xml_feeder import process_feeder
-from src.rss_feeder.links_parser import entries_from_json
-from src.rss_feeder.my_types import *
+from PIL import Image
+
+from Frames.FilterWindow import open_setting_window
+from Frames.SearchWindow import open_search_window
+from Observer import Observer, Observable
+from AppState import AppState
+from GUIConf import *
 
 
 log_p = partial(log, " [PAGE] ")
+
 
 CANVAS_SIZE: Final[int] = 56
 
@@ -26,13 +29,21 @@ NOT_FETCHED_COL: Final[str] = "red"
 NOT_FETCHED_OUTLINE: Final[str] = "#F00"
 
 
+# TODO
+# class DataState(Enum):
+# 	UP_TO_DATE = "up_to_date"
+# 	SAVED = "saved"
+# 	FETCHED = "fetched"	
+# 	OUT_DATED = "outdated"
+
+
 class PageFrame(Enum):
     INIT = "init"
     MAIN = "main"
     EDIT = "edit"
-    GROUPNEW = "groupnew"
-    INFO = "info"
-    APP = "app"
+    GROUP_EDIT = "groupnew"
+    # INFO = "info"
+    # APP = "app"
 
 
 def fetched_circle_color(fetched: bool) -> str:
@@ -62,93 +73,159 @@ def width_font(size: int, title: str) -> int:
     return len(title) * char_width
 
 
-@dataclass
-class AppState:
-    fetched: bool = False
-    topics: list[str] = field(default_factory=list)
-    source: dict[str, list[FeedEntry]] = field(default_factory=dict) 
-    data: list[FeedRecord] = field(default_factory=list)
+def refresh(parent):
+    parent.refresh()
+    parent.save_callback()
+    parent.app.fetched = True
 
-    def load_data(self, file: str, local_data: str=None) -> None:
-    # async def load_data(self, file: str) -> None:
-        self.source = entries_from_json(file)
-        self.topics = [k for k, _ in self.source.items()]
 
-        if local_data is None:
-            self.data, self.topics = asyncio.run(
-                process_feeder(self.source, days=DEFAULT_DAYS, sandbox=Sandbox(0))
-            )
-        else:
-            with open(local_data, "r") as file:
-                records = json.load(file)
-                
-                data = []
-                for x in records:
-                    posts = [PostRecord(**post) for post in x['posts']]
-                    data.append(FeedRecord(**x))    
-                    data[-1].posts = posts
+def header_buttons_frame(root: Frame, app) -> Frame:
+	buts = Frame(root, relief=RIDGE, bd=2)
+	
+	but0 = Button(buts, text="Refresh", command=partial(refresh, app))
+	but5 = Button(buts, text="Homepage", command=lambda: app.show_frame(PageFrame.MAIN))
+	but1 = Button(
+        buts, text="Adjust groups", command=lambda: app.show_frame(PageFrame.GROUP_EDIT)
+    )
+	but2 = Button(buts,text="Update source",command=lambda:app.show_frame(PageFrame.EDIT))
+	but6 = Button(
+		buts, text="Debug: entries",
+		command=lambda: print(f"[DEBUG][ENTRIES]: {app.app.source}")
+	)
+	but4 = Button(buts, text="Find post", command=partial(open_search_window, root, app))
+	but3 = Button(buts, text="Settings", command=partial(open_setting_window, root, app))
 
-                self.data = data
-            
-        self.fetched = True
+	but0.pack(side="left", fill="x")
+	but5.pack(side="left", fill="x")
+	but1.pack(side="left", fill="x")
+	but2.pack(side="left", fill="x")
+	but6.pack(side="left", fill="x")
+	but4.pack(side="left", fill="x")
+	but3.pack(side="left", fill="x")
+	
+	return buts
 
+
+class AppObserver(Observer):
+	def __init__(self, app: 'App') -> None:
+		self.app = app
+
+	def update(self, observable: Observable, prop: str) -> None:
+		match prop:
+			case "fetched":
+				self.data_fetched()
+			case "fetch_need":
+				pass
+			case _:
+				pass
+
+		self.update_circle()
+
+	def update_circle(self):
+		log("UPDATE CIRCLE")
+		log(self.app.app.fetched)
+		event = Event()
+		event.type = '<<Configure>>'
+		event.widget = self.app.canvas
+		event.width = self.app.canvas.winfo_width()
+		event.height = self.app.canvas.winfo_height()
+		
+		self.app.circle = create_circle(
+		    self.app.canvas, 20, 20, 19,
+		    fill=fetched_circle_color(self.app.app.fetched),
+		    outline=fetched_circle_outline(self.app.app.fetched),
+		    width=1
+		)
+		_canvas_resize(self.app.canvas, self.app.circle, event)
+
+	def data_fetched(self):
+		match list(self.app.frames.keys()):
+			case [PageFrame.INIT]:
+				log(f"{self.app.app.fetched=}")
+				log(self.app.frames)
+				self.app.create_pages(self.app.pages)
+				self.app.show_frame(PageFrame.MAIN)
+			case _:
+				pass
+	
 
 class App(WrappClass):
-    frames: dict[PageFrame, Frame] = {}
+	frames: dict[PageFrame, Frame] = {}
 
-    def __init__(self, title: str, pages: dict[PageFrame, Frame], app: AppState):
-        super().__init__(title)
+	def __init__(
+		self, title: str, pages: dict[PageFrame, Frame], app: AppState, imgs: dict[str, str]
+	):
+		super().__init__(title)
+		
+		self.pages: dict[PageFrame, Type[Frame]] = pages
+		self.frames: dict[PageFrame, Frame] = {}
+		self.images: dict[str, Image] = {
+			key: Image.open(img) for (key, img) in imgs.items()
+		}
+		
+		self.app: AppState = app
+		self.app.add_observer(AppObserver(self))
+		
+		self.heading_frame = Frame(self.root, relief=RIDGE, bd=2)
+		self.heading_frame.pack(side="top", fill="x")
+		self.label = Label(
+		    self.heading_frame, text=title, font=FONT_HEADLINE,
+		    wraplength=width_font(35, title)
+		)
+		self.label.pack()
+		self.label.pack_propagate(0)
+		
+		self.canvas = Canvas(
+		    self.heading_frame,
+		    # background="#000",
+		    width=CANVAS_SIZE, height=CANVAS_SIZE,
+		    borderwidth=1, highlightthickness=0
+		) 
+		self.canvas.place(anchor="nw")
+		
+		self.circle = create_circle(
+		    self.canvas, 20, 20, 19,
+		    fill=fetched_circle_color(self.app.fetched),
+		    outline=fetched_circle_outline(self.app.fetched),
+		    width=1
+		)
+		self.canvas.bind("<Configure>", partial(_canvas_resize, self.canvas,self.circle))
+		
+		self.root.minsize(width_font(35, title) + 2 * (CANVAS_SIZE - 25), 0)
+		
+		self.heading_frame = header_buttons_frame(self.root, self)
+		self.heading_frame.pack(pady=10)
+		
+		self.container = Frame(self.root)
+		self.container.pack(side="top", fill = "both", expand = True)
+		
+		self.container.grid_rowconfigure(0, weight = 1)
+		self.container.grid_columnconfigure(0, weight = 1)
+		
+		self.create_init_page(self.pages)
+		self.save_callback = lambda _: _
 
-        self.pages: dict[PageFrame, Type[Frame]] = pages
-        self.frames: dict[PageFrame, Frame] = {}
+	def create_init_page(self, pages: dict[PageFrame, Frame]) -> None:
+		self.current_page: PageFrame = PageFrame.INIT
+		self.frames[PageFrame.INIT] = pages[PageFrame.INIT](self.container, self)
+		self.frames[self.current_page].grid(sticky="nsew")
+		self.frames[self.current_page].refresh() # TODO
 
-        self.app = app
+	def refresh(self) -> None:
+		self.app.fetched = True
+		# self.frames[self.current_page].refresh()
+		_ = [fr.refresh() for fr in self.frames.values()] 
 
-        self.heading_frame = Frame(self.root, relief=RIDGE, bd=2)
-        self.heading_frame.pack(side="top", fill="x")
-        self.label = Label(
-            self.heading_frame, text=title, font=("Verdana", 35),
-            wraplength=width_font(35, title)
-        )
-        self.label.pack()
-        self.label.pack_propagate(0)
+	def create_pages(self, pages: dict[PageFrame, Frame]) -> None:
+		for key, F in pages.items():
+			if key == PageFrame.INIT:
+				continue
+			frame = F(self.container, self)
+			self.frames[key] = frame
 
-        self.canvas = Canvas(
-            self.heading_frame,
-            # background="#000",
-            width=CANVAS_SIZE, height=CANVAS_SIZE,
-            borderwidth=1, highlightthickness=0
-        ) 
-        self.canvas.place(anchor="nw")
-
-        self.circle = create_circle(
-            self.canvas, 20, 20, 19,
-            fill=fetched_circle_color(self.app.fetched),
-            outline=fetched_circle_outline(self.app.fetched),
-            width=1
-        )
-        self.canvas.bind("<Configure>", partial(_canvas_resize, self.canvas,self.circle))
-
-        self.root.minsize(width_font(35, title) + 2 * (CANVAS_SIZE - 25), 0)
-
-        self.container = Frame(self.root)
-        self.container.pack(side="top", fill = "both", expand = True)
-    
-        self.container.grid_rowconfigure(0, weight = 1)
-        self.container.grid_columnconfigure(0, weight = 1)
-        
-        self.create_pages(self.pages)
-        self.current_page: PageFrame = PageFrame.INIT
-        self.show_frame(self.current_page)
-
-    def create_pages(self, pages: dict[str, Frame]) -> None:
-        for key, F in pages.items():
-            frame = F(self.container, self)
-            self.frames[key] = frame
-
-    def show_frame(self, frame: PageFrame) -> None:
-        self.frames[self.current_page].grid_forget()
-        self.current_page = frame
-        self.frames[self.current_page].grid()
-        # self.root.update()
+	def show_frame(self, frame: PageFrame) -> None:
+		self.frames[self.current_page].grid_remove()
+		self.current_page = frame
+		self.frames[self.current_page].grid(sticky="nsew")
+		self.frames[self.current_page].refresh() # TODO
 

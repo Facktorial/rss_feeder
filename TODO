@@ -3,6 +3,13 @@
 - separate container from pages
 - add content
 - add forms
+- replace pynput
+- exiting
+- fix loading
+- fix modules
+- profiler
+- update_links
+- resizing circle
 
 ## Done
 

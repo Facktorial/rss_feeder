@@ -42,7 +42,7 @@ async def clienting_entries(links: LinksEntried, sandbox: Sandbox):
                     links_count,
                     links_progress,
                     name,
-                    client.get(entry.link),
+                    client.get(entry.source),
                     sandbox
                 ) for name, entries in links.items() for entry in entries
         )
@@ -74,9 +74,10 @@ async def filtred_feeder(
                 tmp.append(PostRecord(
                                 element.title,
                                 element.link,
-                                element.published
+                                element.published,
+                                False
                  ))
-        dely.append(FeedRecord(base[0], base[1], base[2], len(tmp), tmp))
+        dely.append(FeedRecord(base[0], base[1], base[2], base[3], len(tmp), tmp))
         topics.add(base[0])
 
     return (dely, topics)
@@ -91,7 +92,7 @@ async def process_feeder(links: LinksEntried = None, **kwargs) -> RegistredFeeds
     reqs = await clienting_entries(links, kwargs["sandbox"])
 
     authors = [
-        (name, entry.autor, entry.link) for name, entries in links.items()
+        (name, entry.autor, entry.link, entry.source) for name, entries in links.items()
         for entry in entries
     ]
     NewsFeed = [(x[0], feedparser.parse(x[1])) for x in zip(authors, reqs)]
@@ -105,9 +106,10 @@ async def process_feeder(links: LinksEntried = None, **kwargs) -> RegistredFeeds
                 tmp.append(PostRecord(
                                 element.title,
                                 element.link,
-                                element.published
+                                element.published,
+                                False
                  ))
-        dely.append(FeedRecord(base[0], base[1], base[2], len(tmp), tmp))
+        dely.append(FeedRecord(base[0], base[1], base[2], base[3], len(tmp), tmp))
         topics.add(base[0])
 
     return (dely, topics)
