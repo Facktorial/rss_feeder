@@ -54,7 +54,7 @@ def render_data(data: List[FeedRecord], sandbox):
 async def wrap(links_count: Dict[str, int], links_progress: Dict[str, int], key: str, func: Callable, sandbox):
     x = await func
 
-    clearConsole()
+    # clearConsole()
 
     links_progress[key] = links_progress.get(key, 0) + 1
     with rich.progress.Progress(

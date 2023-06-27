@@ -58,6 +58,17 @@ class FeedEntry:
     flags: str
     # comment: str
 
+    def to_json(self):
+        data = {
+            "group": self.group,
+            "subgroup": self.subgroup,
+            "name": self.autor,
+            "link": self.link,
+            "source": self.source,
+            "flags": self.flags
+        }
+        return data
+
 
 RegistredFeeds = tuple[list[FeedRecord], set[str]]
 Links = dict[str, list[tuple[str, str]]]
