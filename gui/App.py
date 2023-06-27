@@ -82,7 +82,7 @@ def refresh(parent):
 def header_buttons_frame(root: Frame, app) -> Frame:
 	buts = Frame(root, relief=RIDGE, bd=2)
 	
-	but0 = Button(buts, text="Refresh", command=partial(refresh, app))
+	but0 = Button(buts, text="Save", command=partial(refresh, app))
 	but5 = Button(buts, text="Homepage", command=lambda: app.show_frame(PageFrame.MAIN))
 	but1 = Button(
         buts, text="Adjust groups", command=lambda: app.show_frame(PageFrame.GROUP_EDIT)
@@ -212,6 +212,7 @@ class App(WrappClass):
 		self.frames[self.current_page].refresh() # TODO
 
 	def refresh(self) -> None:
+		log("REFRESH ALL")
 		self.app.fetched = True
 		# self.frames[self.current_page].refresh()
 		_ = [fr.refresh() for fr in self.frames.values()] 

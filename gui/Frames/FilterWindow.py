@@ -1,5 +1,7 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
+
+from tkinter.messagebox import showerror, showwarning, showinfo
 
 from AppState import FetchData, write_config
 from utils import change_theme
@@ -65,6 +67,9 @@ def open_setting_window(root: tk.Tk, app):
             app.refresh()
 
         settings_window.destroy()
+        messagebox.showinfo(
+            "You change settings", "Your changes for filter options were applied"
+        )
 
     apply_button = tk.Button(butts, text="Apply", command=apply_settings)
     apply_button.pack(side="left")

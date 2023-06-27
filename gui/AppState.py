@@ -78,6 +78,7 @@ class AppState(Observable):
 			return
 		
 		self.data = await self.load_records(local_data)
+		log(self.data)
 		await asyncio.sleep(0.0)
  
 	@staticmethod
@@ -96,11 +97,16 @@ class AppState(Observable):
 		return data
 
 	async def load_cached_records(self, local_data) -> None:
+		import copy
+		backup = copy.deepcopy(self.topics)
+
 		self.data, self.topics = await process_feeder(
 			self.source, days=self.config.default_days, sandbox=Sandbox(0)
 		)
+		# FIXME, WTF
+		# self.topics = [*self.topics]
+		self.topics = backup
 		await self.sync_starred(local_data)
-		log(self.data)
 
 	async def sync_starred(self, backup_file: str) -> None:
 		data_sync_with: list[FeedRecord] = await self.load_records(backup_file) 

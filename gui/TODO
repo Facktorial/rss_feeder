@@ -3,6 +3,7 @@
 - FIX: update window: cant do grab
 - TODO: changes of entries doesnt save
 - TODO: check when is full fetch needed, when just update values in data is enough
+- TODO: fetch only selected entries
 - TODO: gui should respond while feeder is feetching
 - TODO in feeder: get content
 - TODO: add subgroups, add flags

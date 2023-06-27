@@ -16,7 +16,7 @@ from PIL import ImageTk, Image
 from src.rss_feeder.my_types import FeedRecord
 
 
-log = partial(print, "[TabeFrame] ")
+log = partial(print, "[TabFrame] ")
 Record = TypeVar('Record')
 
 
@@ -67,7 +67,8 @@ class TabCurrent(Frame):
 	def update_focus(self, record: Record) -> None:
 		self.curr_headline.config(text=f"{record.name}")
 		self.link = record.feed_link
-		self.posts_curr.config(text=f"{record.total_posts}")
+		num = record.total_posts
+		self.posts_curr.config(text=f"{num if num >= 0 else ''}")
 
 
 class TabOverview(Frame):
@@ -158,39 +159,40 @@ class TabFrame(IPage):
 		self.grid_rowconfigure(1, weight=0)
 		self.grid_rowconfigure(2, weight=1)
 
+	def make_tree(self, parent, app_state, gr: str) -> ttk.Treeview:
+		tree = ttk.Treeview(parent)
+		tree.heading('#0', text='Topics')
+	
+		log("MAKING tree: ", gr)
+		
+		for idx, d in enumerate(app_state.data):
+			if d.group == gr:
+				item = tree.insert('', END,
+					values=(d.name, "?"),
+					text=d.name,
+					open=True
+				)
+				for p_idx, post in enumerate(d.posts):
+					if app_state.only_starred and not post.starred:
+						continue
+
+					post_item = tree.insert(
+						item,
+			    	    END,
+	                    text=post.title,
+			    	    iid=f"{post.title}",
+			    	    values=(d.name, post.title),
+						image=self.images[STAR if post.starred else NOT_STAR] # TODO
+			    	)
+		return tree
+
 	def get_trees(self, placement: Frame, app_state: Frame) -> dict[str, ttk.Treeview]:
 		trees: dict[str, ttk.Treeview] = {}
 		trees[None] = ttk.Treeview(placement)
 
 		for gr in app_state.topics:
-			tree = ttk.Treeview(placement)
-			tree.heading('#0', text='Topics')
+			tree = self.make_tree(placement, app_state, gr)
 
-			for idx, d in enumerate(app_state.data):
-				if d.group == gr:
-					item = tree.insert('', END,
-						# values=(TreeVal(d.name, "?"),),
-						values=(d.name, "?"),
-						text=d.name,
-						open=True
-					)
-					for p_idx, post in enumerate(d.posts):
-				    	# log("[XXX] ", post)
-				    	# if not isinstance(post, PostRecord):
-				    	#     log(type(post))
-				    	#     post = PostRecord(**post)
-						if app_state.only_starred and not post.starred:
-							continue
-
-						post_item = tree.insert(
-							item,
-				    	    END,
-                            text=post.title,
-				    	    iid=f"{post.title}",
-				    	    values=(d.name, post.title),
-							image=self.images[STAR if post.starred else NOT_STAR] # TODO
-				    	)
-			
 			trees[gr] = tree
 			tree.bind("<<TreeviewSelect>>", partial(self.on_tree_change, tree))
 			tree.bind('<ButtonPress-1>',
@@ -248,6 +250,7 @@ class TabFrame(IPage):
 					tree.item(post, text=text)
 
 	def refresh(self):
+		log("[REFRESH]")
 		self.records: dict[str, Record] = dict((x.name, x) for x in self.app.data)
 		self.trees = self.get_trees(self.tree_frame, self.app)
 		self.switch_topics(self.get_tab_name())

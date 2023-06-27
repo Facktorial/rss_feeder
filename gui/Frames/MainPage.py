@@ -35,11 +35,11 @@ class MainPage(IPage):
 		
 	def refresh(self):
 		self.tab_frame.refresh()
-		for idx, _ in enumerate(self.tabs):
-			tmp = self.tabControl.tab(idx, "text")
-			
-			if tmp not in self.app.topics:
-				self.add_tab(tmp)
+		# for idx, _ in enumerate(self.tabs):
+		# 	tmp = self.tabControl.tab(idx, "text")
+		# 	
+		# 	if tmp not in self.app.topics:
+		# 		self.add_tab(tmp)
 
 	def add_tab(self, tab_name):
 		new_tab = Frame(self.tabControl)
@@ -47,11 +47,18 @@ class MainPage(IPage):
 		self.tabControl.add(new_tab, text=tab_name)
 
 	def remove_tab(self, tab_name):
-		for index, x_name in enumerate(self.app.topics):
-			if x_name == tab_name:
-				self.tabControl.forget(index)
-				self.tabs.pop(index)
-				break
+		index = list(self.app.topics).index(tab_name)
+		self.tabControl.forget(index)
+		self.tabs.pop(index)
+ 
+		self.update_idletasks()
+
+	def update_idletasks(self):
+		log("UPDATE")
+		log(self.app.topics)
+		self.update()
+		self.tabControl.update_idletasks()
+		self.tab_frame.update_idletasks()
 
 	def on_tab_change(self, event):
 		self.tab_frame.switch_topics(self.get_tab_name())

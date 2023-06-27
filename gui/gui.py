@@ -53,6 +53,14 @@ def save_data(app: AppState, filename: str) -> None:
 	with open(filename, "w") as file:
 		converted_data = [r.to_json() for r in app.data]
 		json.dump(converted_data, file)
+    # FIXME
+	with open(TEST, "w") as file:
+		print("source", app.source)
+		converted_data = {gr: [r.to_json() for r in ls]
+			for (gr, ls) in app.source.items()
+		}
+		print("converted", converted_data)
+		json.dump(converted_data, file)
 	log("[save]")
 
 

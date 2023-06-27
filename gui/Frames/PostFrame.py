@@ -83,8 +83,12 @@ class PostFrame(IPage):
 		self.link = link
 		self.label_detail.config(text=tab, wraplength=self.detail_frame.winfo_width())
 
-		group = kwargs.get('group', None)
-		group = f', [{group}]' if group is not None else ''
+		group = kwargs.get('group', '')
+		author = kwargs.get('autor', '')
+
+		who = ""
+		if group or author:
+			who = f"[{group}, {author}]" if group and author else f"[{group}{author}]"
 
 		if date:
 			date_formats = [
@@ -102,7 +106,7 @@ class PostFrame(IPage):
 			        pass
 
 			fdate = orig_date.strftime("%a, %d %b %Y")
-			self.label_date.config(text=f"{fdate}{group}")
+			self.label_date.config(text=f"{fdate}{who}")
 
 	def refresh(self):
 		log("Do we need refresh here?")
